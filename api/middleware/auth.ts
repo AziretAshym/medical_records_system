@@ -9,12 +9,16 @@ export interface RequestWithUser extends Request {
 
 const auth = async (expressReq: Request, res: Response, next: NextFunction) => {
     const req = expressReq as RequestWithUser;
-    const token = req.get("Authorization");
+    const authHeader = req.get("Authorization");
 
-    if (!token) {
+    if (!authHeader) {
         res.status(401).send({ error: "No token present" });
         return;
     }
+
+    const token = authHeader.startsWith("Bearer ")
+        ? authHeader.split(" ")[1]
+        : authHeader;
 
     const user = await User.findOne({ token });
 
