@@ -11,13 +11,11 @@ export interface UserFields {
 export interface PatientFields {
   firstName: string;
   lastName: string;
-  middleName?: string;
   dateOfBirth: Date;
-  gender: 'male' | 'female' | 'other';
+  gender: 'male' | 'female';
   address: string;
   phone: string;
   email?: string;
-  insuranceNumber?: string;
   bloodType?: string;
   allergies?: string[];
   chronicDiseases?: string[];
