@@ -4,6 +4,7 @@ import User from "./models/User";
 import Patient from "./models/Patient";
 import {randomUUID} from "crypto";
 import MedicalRecord from "./models/MedicalRecord";
+import Treatment from "./models/Treatment";
 
 const run= async () => {
   await mongoose.connect(config.db);
@@ -12,6 +13,8 @@ const run= async () => {
   try {
     await db.dropCollection("users");
     await db.dropCollection("patients");
+    await db.dropCollection("medicalrecords");
+    await db.dropCollection("treatments");
   } catch (e) {
       console.log("Collections were not presents, skipping drop ");
   }
@@ -90,7 +93,7 @@ const run= async () => {
         }
     );
 
-    await MedicalRecord.create(
+    const [record1, record2, record3, record4] = await MedicalRecord.create(
         {
             patient: patient1._id,
             doctor: doc_1._id,
@@ -132,7 +135,62 @@ const run= async () => {
             updatedBy: doc_1._id,
         }
     );
-  await db.close();
+
+    await Treatment.create(
+        {
+            medicalRecord: record1._id,
+            patient: patient1._id,
+            type: 'medication',
+            name: 'Эналаприл',
+            description: 'Препарат для снижения давления',
+            dosage: '10мг',
+            frequency: '2 раза в день',
+            duration: '7 дней',
+            startDate: new Date("2024-10-02"),
+            endDate: new Date("2024-10-09"),
+            status: 'completed',
+            assignedBy: doc_1._id,
+            updatedBy: doc_1._id,
+        },
+        {
+            medicalRecord: record2._id,
+            patient: patient2._id,
+            type: 'procedure',
+            name: 'МРТ колена',
+            description: 'Магнитно-резонансная томография правого колена',
+            startDate: new Date("2024-11-17"),
+            status: 'scheduled',
+            assignedBy: doc_2._id,
+            updatedBy: doc_2._id,
+        },
+        {
+            medicalRecord: record3._id,
+            patient: patient3._id,
+            type: 'medication',
+            name: 'Феррум Лек',
+            description: 'Препарат железа при анемии',
+            dosage: '1 таблетка',
+            frequency: '1 раз в день',
+            duration: '1 месяц',
+            startDate: new Date("2025-01-22"),
+            endDate: new Date("2025-02-22"),
+            status: 'in-progress',
+            assignedBy: doc_2._id,
+            updatedBy: doc_2._id,
+        },
+        {
+            medicalRecord: record4._id,
+            patient: patient1._id,
+            type: 'recommendation',
+            name: 'Покой и холод',
+            description: 'Прикладывать лёд, избегать нагрузки',
+            startDate: new Date("2025-03-06"),
+            status: 'completed',
+            assignedBy: doc_1._id,
+            updatedBy: doc_1._id,
+        }
+    );
+    await db.close();
 };
 
 run().catch(console.error);

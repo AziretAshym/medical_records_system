@@ -6,6 +6,7 @@ import MongoDb from "./mongoDb";
 import usersRouter from "./routes/users";
 import patientsRouter from "./routes/patirnts";
 import medicalRecordsRouter from "./routes/medicalRecords";
+import treatmentsRouter from "./routes/treatments";
 
 const app = express();
 const port = 8000;
@@ -17,6 +18,7 @@ app.use(express.static("public"));
 app.use('/users', usersRouter);
 app.use('/patients', patientsRouter);
 app.use('/medical-records', medicalRecordsRouter);
+app.use('/treatments', treatmentsRouter);
 
 const run = async () => {
     await mongoose.connect(config.db);
