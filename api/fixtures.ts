@@ -3,6 +3,7 @@ import config from "./config";
 import User from "./models/User";
 import Patient from "./models/Patient";
 import {randomUUID} from "crypto";
+import MedicalRecord from "./models/MedicalRecord";
 
 const run= async () => {
   await mongoose.connect(config.db);
@@ -44,7 +45,7 @@ const run= async () => {
           avatar: "fixtures/doc_2.webp",
       },
   );
-    await Patient.create(
+    const [patient1, patient2, patient3] = await Patient.create(
         {
             firstName: "Айжан",
             lastName: "Токтогулова",
@@ -89,6 +90,48 @@ const run= async () => {
         }
     );
 
+    await MedicalRecord.create(
+        {
+            patient: patient1._id,
+            doctor: doc_1._id,
+            visitDate: new Date("2024-10-01T10:00:00Z"),
+            symptoms: "Боль в груди, головокружение",
+            diagnosis: "Гипертонический криз",
+            notes: "Назначены препараты для снижения давления, повторный приём через неделю",
+            createdBy: doc_1._id,
+            updatedBy: doc_1._id,
+        },
+        {
+            patient: patient2._id,
+            doctor: doc_2._id,
+            visitDate: new Date("2024-11-15T14:30:00Z"),
+            symptoms: "Боль в правом колене после травмы",
+            diagnosis: "Растяжение связок",
+            notes: "Назначено МРТ, временно ограничить нагрузку",
+            createdBy: doc_2._id,
+            updatedBy: doc_2._id,
+        },
+        {
+            patient: patient3._id,
+            doctor: doc_2._id,
+            visitDate: new Date("2025-01-20T09:00:00Z"),
+            symptoms: "Одышка, быстрая утомляемость",
+            diagnosis: "Анемия",
+            notes: "Назначены анализы крови, препараты железа",
+            createdBy: doc_2._id,
+            updatedBy: doc_2._id,
+        },
+        {
+            patient: patient1._id,
+            doctor: doc_1._id,
+            visitDate: new Date("2025-03-05T16:00:00Z"),
+            symptoms: "Ушиб локтя",
+            diagnosis: "Без повреждений кости, легкая гематома",
+            notes: "Назначен холод и покой на 2-3 дня",
+            createdBy: doc_1._id,
+            updatedBy: doc_1._id,
+        }
+    );
   await db.close();
 };
 
