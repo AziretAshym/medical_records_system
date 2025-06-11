@@ -1,4 +1,3 @@
-
 export interface RegisterMutation {
   username: string;
   password: string;
@@ -10,7 +9,6 @@ export interface LoginMutation {
   username: string;
   password: string;
 }
-
 
 export interface User {
   _id: string;
@@ -32,7 +30,7 @@ export interface ValidationError {
       name: string;
       message: string;
     }
-  },
+  };
   message: string;
   name: string;
   _message: string;
@@ -41,3 +39,45 @@ export interface ValidationError {
 export interface GlobalError {
   error: string;
 }
+
+export interface Patient {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: 'male' | 'female';
+  address: string;
+  phone: string;
+  email?: string;
+  bloodType?: string;
+  allergies: string[];
+  chronicDiseases: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PatientFormData {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: 'male' | 'female';
+  address: string;
+  phone: string;
+  email: string;
+  bloodType: string;
+  allergies: string[];
+  chronicDiseases: string[];
+}
+
+export type CreatePatientPayload = PatientFormData;
+
+export interface UpdatePatientPayload {
+  id: string;
+  patientData: Partial<PatientFormData>;
+}
+
+export interface PatientResponse {
+  patient: Patient;
+  message?: string;
+}
+
