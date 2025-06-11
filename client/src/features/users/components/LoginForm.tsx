@@ -3,14 +3,26 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks.ts';
 import { login } from '@/app/thunks/usersThunks.ts';
 import { useNavigate } from 'react-router-dom';
 import { selectLoginError } from '@/app/slices/usersSlice.ts';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Lock } from 'lucide-react';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+  CircularProgress
+} from '@mui/material';
+import {
+  Lock as LockIcon,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
 
 const LoginForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loginError = useAppSelector(selectLoginError);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -22,85 +34,86 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await dispatch(login(form)).unwrap();
       navigate('/');
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
       {loginError && (
-        <div className="text-sm text-red-600 bg-red-100/40 border border-red-300 p-3 rounded-md flex items-center gap-2">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          {loginError.error}
-        </div>
+        <Box
+          sx={{
+            mb: 3,
+            p: 2,
+            bgcolor: 'error.light',
+            color: 'error.contrastText',
+            borderRadius: 1,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}
+        >
+          <Typography variant="body2">
+            {loginError.error}
+          </Typography>
+        </Box>
       )}
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="username" className="block text-sm font-medium text-white/80">
-            Имя пользователя
-          </label>
-          <Input
-            id="username"
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            placeholder="Введите имя"
-            className="w-full bg-white/20 placeholder-white/80 text-white border-white/30 focus:ring-white/50 focus:border-white/60"
-            autoComplete="username"
-          />
-        </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="password" className="block text-sm font-medium text-white/80">
-            Пароль
-          </label>
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Введите пароль"
-              className="w-full pr-10 bg-white/20 placeholder-white/80 text-white border-white/30 focus:ring-white/50 focus:border-white/60"
-              autoComplete="current-password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(prev => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
-              tabIndex={-1}
-            >
-              {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
-            </button>
-          </div>
-        </div>
-      </div>
+      <TextField
+        margin="normal"
+        fullWidth
+        id="username"
+        label="Имя пользователя"
+        name="username"
+        value={form.username}
+        onChange={handleChange}
+        autoComplete="username"
+        autoFocus
+      />
+
+      <TextField
+        margin="normal"
+        fullWidth
+        name="password"
+        label="Пароль"
+        type={showPassword ? 'text' : 'password'}
+        id="password"
+        value={form.password}
+        onChange={handleChange}
+        autoComplete="current-password"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
 
       <Button
         type="submit"
-        className="mt-6 w-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-colors h-10"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2, py: 1.5 }}
+        disabled={loading}
+        startIcon={loading ? <CircularProgress size={20} /> : <LockIcon />}
       >
-        <Lock className="w-4 h-4 mr-2"/>
-        Войти
+        {loading ? 'Вход...' : 'Войти'}
       </Button>
-    </form>
+    </Box>
   );
 };
 

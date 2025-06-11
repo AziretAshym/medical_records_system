@@ -1,5 +1,10 @@
 import LoginForm from '@/features/users/components/LoginForm.tsx';
-import { HeartPulse } from 'lucide-react';
+import {
+  Box,
+  Typography,
+  Paper,
+} from '@mui/material';
+import { Favorite as FavoriteIcon } from '@mui/icons-material';
 
 const images = [
   '/login/med-1.jpg',
@@ -11,29 +16,79 @@ const LoginPage = () => {
   const randomImage = images[Math.floor(Math.random() * images.length)];
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      <img
-        src={randomImage}
-        alt="Medical background"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+    <Box
+      sx={{
+        position: 'relative',
+        minHeight: '100vh',
+        width: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: `url(${randomImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(to bottom right, rgba(30, 58, 138, 0.4), rgba(8, 145, 178, 0.4))',
+        }
+      }}
+    >
+      <Paper
+        elevation={10}
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          maxWidth: 450,
+          p: 4,
+          mx: 2,
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: 3
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mb: 4
+          }}
+        >
+          <Box
+            sx={{
+              width: 64,
+              height: 64,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #0891b2, #1e40af)',
+              color: 'white',
+              mb: 2,
+              boxShadow: 3
+            }}
+          >
+            <FavoriteIcon fontSize="large" />
+          </Box>
+          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold', color: 'white', mb: 1 }}>
+            MedCare
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+            Система управления пациентами
+          </Typography>
+        </Box>
 
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-cyan-900/40" />
-
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
-        <div className="w-full max-w-md bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl shadow-xl px-10 py-12 sm:px-12 sm:py-14">
-          <div className="flex flex-col items-center mb-8">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-cyan-600 to-blue-600 text-white shadow-lg mb-4">
-              <HeartPulse className="h-7 w-7" strokeWidth={2.5} />
-            </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight mb-1">MedCare</h1>
-            <p className="text-white/80">Система управления пациентами</p>
-          </div>
-
-          <LoginForm />
-        </div>
-      </div>
-    </div>
+        <LoginForm />
+      </Paper>
+    </Box>
   );
 };
 
