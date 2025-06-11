@@ -4,7 +4,7 @@ import cors from "cors";
 import config from "./config";
 import MongoDb from "./mongoDb";
 import usersRouter from "./routes/users";
-import patientsRouter from "./routes/patirnts";
+import patientsRouter from "./routes/patients";
 import medicalRecordsRouter from "./routes/medicalRecords";
 import treatmentsRouter from "./routes/treatments";
 

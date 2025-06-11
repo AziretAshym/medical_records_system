@@ -6,7 +6,7 @@ import permit from "../middleware/permit";
 
 const patientsRouter = express.Router();
 
-patientsRouter.get("/", auth, async (req, res, next) => {
+patientsRouter.get("/", async (req, res, next) => {
     try {
         const { firstName, lastName, insuranceNumber, limit = 20, page = 1 } = req.query;
 
@@ -43,7 +43,7 @@ patientsRouter.get("/", auth, async (req, res, next) => {
     }
 });
 
-patientsRouter.get("/:id", auth, async (req, res, next) => {
+patientsRouter.get("/:id", async (req, res, next) => {
     try {
         const patient = await Patient.findById(req.params.id);
 
@@ -59,7 +59,7 @@ patientsRouter.get("/:id", auth, async (req, res, next) => {
     }
 });
 
-patientsRouter.post("/", auth, permit('admin', 'doctor'), async (req, res, next) => {
+patientsRouter.post("/", async (req, res, next) => {
     try {
         const patientData = {
             firstName: req.body.firstName,
@@ -88,7 +88,7 @@ patientsRouter.post("/", auth, permit('admin', 'doctor'), async (req, res, next)
     }
 });
 
-patientsRouter.patch("/:id", auth, permit('admin', 'doctor'), async (req, res, next) => {
+patientsRouter.patch("/:id",  async (req, res, next) => {
     try {
         const patientId = req.params.id;
 
@@ -130,7 +130,7 @@ patientsRouter.patch("/:id", auth, permit('admin', 'doctor'), async (req, res, n
 });
 
 
-patientsRouter.delete("/:id", auth, permit('admin', 'doctor'),  async (req, res, next) => {
+patientsRouter.delete("/:id",  async (req, res, next) => {
     try {
         const patient = await Patient.findByIdAndDelete(req.params.id);
 
