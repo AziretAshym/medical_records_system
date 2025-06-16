@@ -3,11 +3,10 @@ import MedicalRecord from "../models/MedicalRecord";
 import Patient from "../models/Patient";
 import mongoose from "mongoose";
 import auth, { RequestWithUser } from "../middleware/auth";
-import permit from "../middleware/permit";
 
 const medicalRecordsRouter = express.Router();
 
-medicalRecordsRouter.get("/patient/:patientId", auth, async (req, res, next) => {
+medicalRecordsRouter.get("/patient/:patientId", async (req, res, next) => {
     try {
         const patientId = req.params.patientId;
 
@@ -28,7 +27,7 @@ medicalRecordsRouter.get("/patient/:patientId", auth, async (req, res, next) => 
     }
 });
 
-medicalRecordsRouter.get("/:id", auth, async (req, res, next) => {
+medicalRecordsRouter.get("/:id", async (req, res, next) => {
     try {
         const record = await MedicalRecord.findById(req.params.id)
             .populate('doctor', 'name specialization')
@@ -46,7 +45,7 @@ medicalRecordsRouter.get("/:id", auth, async (req, res, next) => {
     }
 });
 
-medicalRecordsRouter.post("/", auth, async (req, res, next) => {
+medicalRecordsRouter.post("/", async (req, res, next) => {
     const userReq = req as RequestWithUser;
     try {
         const patient = await Patient.findById(userReq.body.patient);
@@ -78,7 +77,7 @@ medicalRecordsRouter.post("/", auth, async (req, res, next) => {
     }
 });
 
-medicalRecordsRouter.put("/:id", auth, permit('admin', 'doctor'), async (req, res, next) => {
+medicalRecordsRouter.put("/:id", auth, async (req, res, next) => {
     const userReq = req as RequestWithUser;
 
     try {
