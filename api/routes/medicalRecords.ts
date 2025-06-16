@@ -6,6 +6,33 @@ import auth, { RequestWithUser } from "../middleware/auth";
 
 const medicalRecordsRouter = express.Router();
 
+medicalRecordsRouter.get('/', async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const skip = (page - 1) * limit;
+
+        const records = await MedicalRecord.find()
+            .populate('doctor', 'name specialization')
+            .populate('patient', 'firstName lastName')
+            .sort({ visitDate: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await MedicalRecord.countDocuments();
+
+        res.send({
+            total,
+            page,
+            limit,
+            records,
+        })
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 medicalRecordsRouter.get("/patient/:patientId", async (req, res, next) => {
     try {
         const patientId = req.params.patientId;
