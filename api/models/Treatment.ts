@@ -1,4 +1,5 @@
 import mongoose, { HydratedDocument, Model } from "mongoose";
+import Counter from "./Counter";
 
 export interface TreatmentFields {
     medicalRecord: mongoose.Types.ObjectId;
@@ -12,6 +13,7 @@ export interface TreatmentFields {
     startDate: Date;
     endDate?: Date;
     status: 'scheduled' | 'in-progress' | 'completed' | 'canceled';
+    treatmentNumber: string;
     assignedBy: mongoose.Types.ObjectId;
     updatedBy: mongoose.Types.ObjectId;
 }
@@ -54,6 +56,7 @@ const TreatmentSchema = new Schema<HydratedDocument<TreatmentFields>, TreatmentM
         ref: 'User',
         required: true,
     },
+    treatmentNumber: {type: String, unique: true},
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -64,6 +67,23 @@ const TreatmentSchema = new Schema<HydratedDocument<TreatmentFields>, TreatmentM
 TreatmentSchema.index({ patient: 1, startDate: -1 });
 TreatmentSchema.index({ medicalRecord: 1 });
 TreatmentSchema.index({ status: 1 });
+
+TreatmentSchema.pre('save', async function (next) {
+    if (!this.isNew) return next();
+
+    try {
+        const counter = await Counter.findOneAndUpdate(
+            { name: 'treatment' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        this.treatmentNumber = `TRT-${counter.seq}`;
+        next();
+    } catch (err) {
+        next(err as Error);
+    }
+});
 
 const Treatment = mongoose.model("Treatment", TreatmentSchema);
 export default Treatment;

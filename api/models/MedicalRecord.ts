@@ -1,4 +1,5 @@
 import mongoose, { HydratedDocument, Model } from "mongoose";
+import Counter from "./Counter";
 
 export interface MedicalRecordFields {
     patient: mongoose.Types.ObjectId;
@@ -7,6 +8,7 @@ export interface MedicalRecordFields {
     symptoms: string[];
     diagnosis: string;
     notes: string;
+    recordNumber: string;
     createdBy: mongoose.Types.ObjectId;
     updatedBy: mongoose.Types.ObjectId;
 }
@@ -30,6 +32,7 @@ const MedicalRecordSchema = new Schema<HydratedDocument<MedicalRecordFields>, Me
     symptoms: [{ type: String }],
     diagnosis: { type: String, required: true },
     notes: { type: String },
+    recordNumber: { type: String, unique: true },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -45,6 +48,23 @@ const MedicalRecordSchema = new Schema<HydratedDocument<MedicalRecordFields>, Me
 MedicalRecordSchema.index({ patient: 1, visitDate: -1 });
 MedicalRecordSchema.index({ doctor: 1 });
 MedicalRecordSchema.index({ diagnosis: 'text' });
+
+MedicalRecordSchema.pre('save', async function (next) {
+    if (!this.isNew) return next();
+
+    try {
+        const counter = await Counter.findOneAndUpdate(
+            { name: 'medicalRecord' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        this.recordNumber = `MR-${counter.seq}`;
+        next();
+    } catch (error) {
+        next(error as Error);
+    }
+});
 
 const MedicalRecord = mongoose.model("MedicalRecord", MedicalRecordSchema);
 export default MedicalRecord;
