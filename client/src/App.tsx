@@ -4,6 +4,7 @@ import Layout from '@/layout/Layout.tsx';
 import PatientsPage from '@/features/patients/containers/PatientsPage.tsx';
 import { TooltipProvider } from '@/components/ui/tooltip.tsx';
 import PatientDetailPage from '@/features/patients/containers/PatientDetailPage.tsx';
+import MedicalRecordsPage from '@/features/medicalRecords/containers/MedicalRecordsPage.tsx';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
             <Route path="/" element={<PatientsPage/>}/>
             <Route path="/patients" element={<PatientsPage/>}/>
             <Route path="/patients/:id" element={<PatientDetailPage />} />
+            <Route path="/app-usage" element={<MedicalRecordsPage />} />
             <Route path="/*" element={<h1>Not found</h1>}/>
           </Route>
         </Routes>

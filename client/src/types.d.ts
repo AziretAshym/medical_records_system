@@ -19,6 +19,13 @@ export interface User {
   token: string;
 }
 
+export interface UserDoctor {
+  _id: string;
+  name: string;
+  specialization?: string;
+  avatar?: string;
+}
+
 export interface RegisterResponse {
   user: User;
   message: string;
@@ -81,3 +88,25 @@ export interface PatientResponse {
   message?: string;
 }
 
+
+export interface MedicalRecord {
+  _id: string;
+  patient: string | Patient;
+  doctor: string | User;
+  visitDate: string;
+  symptoms: string[];
+  diagnosis: string;
+  notes: string;
+  recordNumber: string;
+  createdBy: string | User;
+  updatedBy: string | User;
+}
+
+export interface MedicalRecordFormData {
+  patient: string;
+  doctor: string;
+  symptoms: string;
+  diagnosis: string;
+  treatment: string;
+  date: string;
+}
