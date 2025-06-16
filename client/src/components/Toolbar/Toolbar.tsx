@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { selectUser } from '@/app/slices/usersSlice';
 import { useAppSelector } from '@/app/hooks';
 import UserMenu from './UserMenu';
-import SidebarContent from './SidebarContent';
 import {
   AppBar,
   Box,
@@ -14,6 +13,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { HeartPulse } from 'lucide-react';
+import SidebarContent from '@/components/Toolbar/SidebarContent.tsx';
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
@@ -81,7 +81,7 @@ const AppToolbar = () => {
           }
         }}
       >
-        <SidebarContent onLinkClick={toggleDrawer(false)} />
+        <SidebarContent onLinkClick={() => setIsDrawerOpen(false)} />
       </Drawer>
     </AppBar>
 

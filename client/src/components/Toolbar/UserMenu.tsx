@@ -49,8 +49,6 @@ const UserMenu: React.FC<Props> = ({ user }) => {
     return undefined;
   })();
 
-  console.log("userAvatar URL:", userAvatar);
-
   return (
     <>
       <IconButton onClick={handleMenuOpen}>

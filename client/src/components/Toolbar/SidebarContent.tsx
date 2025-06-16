@@ -45,9 +45,9 @@ const SidebarContent: React.FC<Props> = ({ onLinkClick }) => {
   return (
     <List sx={{ width: '100%' }}>
       {navItem('/patients', 'Пациенты', <User size={20} />)}
-      {navItem('/patients', 'Приемы', <NotepadText size={20} />)}
-      {navItem('/patients', 'Назначения', <ScrollText size={20} />)}
-      {navItem('/patients', 'Админ-панель', <ShieldUser size={20} />)}
+      {navItem('/medical-records', 'Приемы', <NotepadText size={20} />)}
+      {navItem('/treatments', 'Назначения', <ScrollText size={20} />)}
+      {navItem('/admin', 'Админ-панель', <ShieldUser size={20} />)}
       {navItem('/app-usage', 'Справка', <BadgeHelp size={20} />)}
     </List>
   );
