@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   Paper, Table, TableHead, TableBody, TableRow, TableCell,
-  TableContainer, Typography,
+  TableContainer, Typography, Link, Box
 } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { MedicalRecord } from '@/types';
 import ActionsMenu from '@/components/ActionsMenu/ActionsMenu';
 import PaginationControls from '@/components/PaginationControls/PaginationControls';
@@ -37,9 +38,40 @@ const MedicalRecordsDataList: React.FC<Props> = ({ records, page, count, limit, 
             {records.length > 0 ? (
               records.map((r) => (
                 <TableRow key={r._id} hover>
-                  <TableCell>{r.recordNumber}</TableCell>
+                  <TableCell>
+                    <Link
+                      component={RouterLink}
+                      to={`/medical-records/${r._id}`}
+                      underline="none"
+                    >
+                      <Box
+                        sx={{
+                          display: 'inline-block',
+                          fontSize: '0.875rem',
+                          fontWeight: 'bold',
+                          color: 'primary.main',
+                          backgroundColor: 'primary.50',
+                          border: '1px solid',
+                          borderColor: 'primary.200',
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 2,
+                          boxShadow: 1,
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            backgroundColor: 'primary.100',
+                            color: 'primary.dark',
+                          },
+                        }}
+                      >
+                        {r.recordNumber}
+                      </Box>
+                    </Link>
+                  </TableCell>
                   <TableCell>{typeof r.patient === 'string' ? r.patient : `${r.patient.lastName} ${r.patient.firstName}`}</TableCell>
-                  <TableCell>{typeof r.doctor === 'string' ? r.doctor : r.doctor.displayName}</TableCell>
+                  <TableCell>
+                    {(r.doctor && typeof r.doctor === 'object') ? r.doctor.name : ''}
+                  </TableCell>
                   <TableCell>{formatDate(r.visitDate)}</TableCell>
                   <TableCell>{r.diagnosis}</TableCell>
                   <TableCell>

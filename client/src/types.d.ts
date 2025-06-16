@@ -92,7 +92,7 @@ export interface PatientResponse {
 export interface MedicalRecord {
   _id: string;
   patient: string | Patient;
-  doctor: string | User;
+  doctor: string | UserDoctor;
   visitDate: string;
   symptoms: string[];
   diagnosis: string;

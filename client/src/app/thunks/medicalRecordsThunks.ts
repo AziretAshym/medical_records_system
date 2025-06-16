@@ -8,10 +8,8 @@ export const fetchMedicalRecords = createAsyncThunk<{
 }, { page: number; limit: number }>(
   'medicalRecords/fetchAll',
   async ({ page, limit }) => {
-    const response = await axiosApi.get(`/medical-records`, {
-      params: { page, limit },
-    });
-    return { records: response.data, count: response.data.length };
+    const response = await axiosApi.get('/medical-records', { params: { page, limit } });
+    return { records: response.data.records, count: response.data.total };
   }
 );
 
