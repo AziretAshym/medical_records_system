@@ -1,14 +1,17 @@
-import { GlobalError, User, ValidationError } from '@/types';
+import { GlobalError, User, UserDoctor, ValidationError } from '@/types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store.ts';
-import { login, register } from '../thunks/usersThunks.ts';
+import { fetchDoctors, login, register } from '../thunks/usersThunks.ts';
 
 interface UsersState {
-  user: User | null,
-  registerLoading: boolean,
-  registerError: ValidationError | null,
-  loginLoading: boolean,
-  loginError: GlobalError | null,
+  user: User | null;
+  registerLoading: boolean;
+  registerError: ValidationError | null;
+  loginLoading: boolean;
+  loginError: GlobalError | null;
+  all: UserDoctor[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: UsersState = {
@@ -17,12 +20,17 @@ const initialState: UsersState = {
   registerError: null,
   loginLoading: false,
   loginError: null,
+  all: [],
+  loading: false,
+  error: null,
 };
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectRegisterError = (state: RootState) => state.users.registerError;
-
 export const selectLoginError = (state: RootState) => state.users.loginError;
+export const selectAllDoctors = (state: RootState) => state.users.all;
+export const selectDoctorsLoading = (state: RootState) => state.users.loading;
+export const selectDoctorsError = (state: RootState) => state.users.error;
 
 
 
@@ -61,6 +69,18 @@ export const usersSlice = createSlice({
         state.loginLoading = false;
         state.loginError = error || null;
       })
+      .addCase(fetchDoctors.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDoctors.fulfilled, (state, action) => {
+        state.loading = false;
+        state.all = action.payload;
+      })
+      .addCase(fetchDoctors.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Ошибка загрузки врачей';
+      });
   }
 });
 

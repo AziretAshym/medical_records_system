@@ -7,6 +7,7 @@ import {
   fetchPatients,
   updatePatient
 } from '@/app/thunks/patientsThunks.ts';
+import { RootState } from '@/app/store.ts';
 
 
 interface PatientsState {
@@ -25,7 +26,10 @@ const initialState: PatientsState = {
   selectedPatient: null,
 };
 
-
+export const selectPatients = (state: RootState) => state.patients.patients;
+export const selectSelectedPatient = (state: RootState) => state.patients.selectedPatient;
+export const selectPatientsLoading = (state: RootState) => state.patients.loading;
+export const selectError = (state: RootState) => state.patients.error;
 
 const patientsSlice = createSlice({
   name: 'patients',

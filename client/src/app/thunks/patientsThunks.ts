@@ -5,15 +5,18 @@ import { isAxiosError } from 'axios';
 
 export const fetchPatients = createAsyncThunk(
   'patients/fetchPatients',
-  async (params: { page?: number; limit?: number; firstName?: string; lastName?: string }, { rejectWithValue }) => {
+  async (
+    params: { page?: number; limit?: number; firstName?: string; lastName?: string } | undefined,
+    { rejectWithValue }
+  ) => {
     try {
       const query = new URLSearchParams();
-      if (params.page) query.append('page', params.page.toString());
-      if (params.limit) query.append('limit', params.limit.toString());
-      if (params.firstName) query.append('firstName', params.firstName);
-      if (params.lastName) query.append('lastName', params.lastName);
+      if (params?.page) query.append('page', params.page.toString());
+      if (params?.limit) query.append('limit', params.limit.toString());
+      if (params?.firstName) query.append('firstName', params.firstName);
+      if (params?.lastName) query.append('lastName', params.lastName);
 
-      const { data } = await axiosApi.get(`/patients`);
+      const { data } = await axiosApi.get(`/patients?${query}`);
       return data;
     } catch (e) {
       if (isAxiosError(e) && e.response && e.response.status === 400) {

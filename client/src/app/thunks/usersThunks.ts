@@ -1,5 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { GlobalError, LoginMutation, RegisterMutation, RegisterResponse, User, ValidationError } from '@/types';
+import {
+  GlobalError,
+  LoginMutation,
+  RegisterMutation,
+  RegisterResponse,
+  User,
+  UserDoctor,
+  ValidationError
+} from '@/types';
 import axiosApi from '../../axiosApi.ts';
 import { isAxiosError } from 'axios';
 import { RootState } from '../store.ts';
@@ -58,5 +66,13 @@ export const logout = createAsyncThunk<void, void, {state: RootState}>(
   async (_, {getState}) => {
     const token = getState().users.user?.token;
     await axiosApi.delete(`users/session`, {headers: {'Authorization': token}});
+  }
+);
+
+export const fetchDoctors = createAsyncThunk<UserDoctor[]>(
+  'doctors/fetchDoctors',
+  async () => {
+    const response = await axiosApi.get('/users/doctors');
+    return response.data;
   }
 );
