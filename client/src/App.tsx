@@ -8,6 +8,7 @@ import MedicalRecordsPage from '@/features/medicalRecords/containers/MedicalReco
 import MedicalRecordDetailPage from '@/features/medicalRecords/containers/MedicalRecordDetailPage.tsx';
 import TreatmentsPage from '@/features/treatments/containers/TreatmentsPage.tsx';
 import TreatmentDetailPage from '@/features/treatments/containers/TreatmentDetailPage.tsx';
+import AdminPage from '@/features/admin/containers/AdminPage.tsx';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/medical-records/:id" element={<MedicalRecordDetailPage />} />
             <Route path="/treatments" element={<TreatmentsPage />} />
             <Route path="/treatments/:id" element={<TreatmentDetailPage />} />
+            <Route path="/admin-panel" element={<AdminPage />} />
             <Route path="/*" element={<h1>Not found</h1>}/>
           </Route>
         </Routes>

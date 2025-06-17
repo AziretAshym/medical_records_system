@@ -6,7 +6,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { User, BadgeHelp, ShieldUser, NotepadText, ScrollText } from 'lucide-react';
+import { User, BadgeHelp, ShieldUser, NotepadText, ScrollText, Archive } from 'lucide-react';
 
 interface Props {
   onLinkClick: () => void;
@@ -47,7 +47,8 @@ const SidebarContent: React.FC<Props> = ({ onLinkClick }) => {
       {navItem('/patients', 'Пациенты', <User size={20} />)}
       {navItem('/medical-records', 'Приемы', <NotepadText size={20} />)}
       {navItem('/treatments', 'Назначения', <ScrollText size={20} />)}
-      {navItem('/admin', 'Админ-панель', <ShieldUser size={20} />)}
+      {navItem('/admin-panel', 'Админ-панель', <ShieldUser size={20} />)}
+      {navItem('/archive', 'Архив', <Archive size={20} />)}
       {navItem('/app-usage', 'Справка', <BadgeHelp size={20} />)}
     </List>
   );
