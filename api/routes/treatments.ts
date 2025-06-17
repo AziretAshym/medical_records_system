@@ -8,6 +8,21 @@ import permit from '../middleware/permit';
 
 const treatmentsRouter = express.Router();
 
+treatmentsRouter.get('/', auth, async (_req, res, next) => {
+    try {
+        const treatments = await Treatment.find()
+            .populate('assignedBy', 'name')
+            .populate('updatedBy', 'name')
+            .populate('patient', 'firstName lastName')
+            .sort({ startDate: -1 });
+
+        res.send(treatments);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 treatmentsRouter.get('/patient/:patientId', auth, async (req, res, next) => {
     try {
         const patientId = req.params.patientId;
