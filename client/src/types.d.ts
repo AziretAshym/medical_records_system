@@ -105,8 +105,8 @@ export interface MedicalRecord {
 export interface MedicalRecordFormData {
   patient: string;
   doctor: string;
+  visitDate: string;
   symptoms: string;
   diagnosis: string;
-  treatment: string;
-  date: string;
+  notes: string;
 }

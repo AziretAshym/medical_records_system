@@ -37,12 +37,10 @@ const MedicalRecordDetail: React.FC<Props> = ({ medicalRecord }) => {
     if (typeof person === 'string') return person;
     if (!person) return '';
 
-    if ('name' in person) {
-      return person.name;
-    }
-
-    if ('displayName' in person) {
-      return person.displayName;
+    if ('name' in person) return person.name;
+    if ('displayName' in person) return person.displayName;
+    if ('firstName' in person && 'lastName' in person) {
+      return `${person.firstName} ${person.lastName}`;
     }
 
     return '';

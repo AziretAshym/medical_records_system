@@ -36,7 +36,7 @@ const MedicalRecordsPage: React.FC = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <FileText />
           <Typography variant="h4" fontWeight="bold" color="#023e5e">
-            Медицинские записи
+            Приемы
           </Typography>
         </Box>
         <Button
@@ -55,7 +55,7 @@ const MedicalRecordsPage: React.FC = () => {
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
         <TextField
           size="small"
-          label="Диагноз"
+          label="Поиск"
           value={filter.diagnosis}
           onChange={(e) => setFilter((f) => ({ ...f, diagnosis: e.target.value }))}
         />
@@ -82,7 +82,11 @@ const MedicalRecordsPage: React.FC = () => {
 
       <Dialog open={isFormOpen} onClose={() => setIsFormOpen(false)} fullWidth maxWidth="md">
         <DialogContent>
-          <MedicalRecordForm onClose={() => setIsFormOpen(false)} />
+          <MedicalRecordForm
+            recordId={null}
+            onClose={() => setIsFormOpen(false)}
+            patientId=""
+          />
         </DialogContent>
       </Dialog>
     </>

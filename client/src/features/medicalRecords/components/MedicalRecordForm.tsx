@@ -1,89 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import {
-  TextField,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  InputLabel,
-  FormControl,
-  Button,
   Box,
+  Typography,
+  TextField,
+  Paper,
+  Divider,
+  IconButton,
+  Button,
+  Alert,
+  CircularProgress,
+  MenuItem,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import {
-  fetchMedicalRecordById,
   createMedicalRecord,
   updateMedicalRecord,
+  fetchMedicalRecordById,
 } from '@/app/thunks/medicalRecordsThunks';
-import { fetchPatients } from '@/app/thunks/patientsThunks.ts';
-import { fetchDoctors } from '@/app/thunks/usersThunks.ts';
+import { MedicalRecordFormData } from '@/types';
+import { Assignment, Save, Close } from '@mui/icons-material';
+import { fetchDoctors } from '@/app/thunks/usersThunks';
 import { selectAllDoctors } from '@/app/slices/usersSlice.ts';
 import { selectPatients } from '@/app/slices/patientsSlice.ts';
-import { selectSelectedMedicalRecord } from '@/app/slices/medicalRecordsSlice.ts';
 
-interface MedicalRecordFormData {
-  patient: string;
-  doctor: string;
-  diagnosis: string;
-  symptoms: string;
-  notes: string;
-  visitDate: string;
-}
-
-interface Props {
-  recordId?: string;
+interface MedicalRecordFormProps {
+  recordId: string | null;
   onClose: () => void;
+  patientId: string;
 }
 
-const emptyRecord: MedicalRecordFormData = {
+const emptyForm: MedicalRecordFormData = {
   patient: '',
   doctor: '',
-  diagnosis: '',
-  symptoms: '',
-  notes: '',
   visitDate: new Date().toISOString().slice(0, 10),
+  symptoms: '',
+  diagnosis: '',
+  notes: '',
 };
 
-const MedicalRecordForm: React.FC<Props> = ({ recordId, onClose }) => {
+const MedicalRecordForm: React.FC<MedicalRecordFormProps> = ({
+  recordId,
+  onClose,
+  patientId,
+}) => {
   const dispatch = useAppDispatch();
+  const { selectedRecord, loading, error } = useAppSelector((state) => state.medicalRecords);
+  const doctors = useAppSelector(selectAllDoctors);
+  const patients = useAppSelector(selectPatients);
 
-  const allPatients = useAppSelector(selectPatients);
-  const allDoctors = useAppSelector(selectAllDoctors);
-  const selectedRecord = useAppSelector(selectSelectedMedicalRecord);
-
-  const [formData, setFormData] = useState<MedicalRecordFormData>(emptyRecord);
+  const [formData, setFormData] = useState<MedicalRecordFormData>({
+    ...emptyForm,
+    patient: patientId,
+  });
 
   useEffect(() => {
-    dispatch(fetchPatients());
     dispatch(fetchDoctors());
-
-    if (recordId) {
-      dispatch(fetchMedicalRecordById(recordId));
-    }
+    if (recordId) dispatch(fetchMedicalRecordById(recordId));
   }, [dispatch, recordId]);
 
   useEffect(() => {
-    if (selectedRecord && recordId) {
+    if (recordId && selectedRecord) {
       setFormData({
-        patient:
-          typeof selectedRecord.patient === 'string'
-            ? selectedRecord.patient
-            : selectedRecord.patient._id,
-        doctor:
-          typeof selectedRecord.doctor === 'string'
-            ? selectedRecord.doctor
-            : selectedRecord.doctor._id,
-        diagnosis: selectedRecord.diagnosis || '',
-        symptoms: Array.isArray(selectedRecord.symptoms)
-          ? selectedRecord.symptoms.join(', ')
-          : '',
+        patient: typeof selectedRecord.patient === 'string'
+          ? selectedRecord.patient
+          : selectedRecord.patient._id,
+        doctor: typeof selectedRecord.doctor === 'string'
+          ? selectedRecord.doctor
+          : selectedRecord.doctor._id,
+        visitDate: selectedRecord.visitDate.slice(0, 10),
+        symptoms: selectedRecord.symptoms.join(', '),
+        diagnosis: selectedRecord.diagnosis,
         notes: selectedRecord.notes || '',
-        visitDate: selectedRecord.visitDate
-          ? selectedRecord.visitDate.slice(0, 10)
-          : new Date().toISOString().slice(0, 10),
       });
-    } else {
-      setFormData(emptyRecord);
     }
   }, [selectedRecord, recordId]);
 
@@ -91,12 +79,7 @@ const MedicalRecordForm: React.FC<Props> = ({ recordId, onClose }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((f) => ({ ...f, [name]: value }));
-  };
-
-  const handleSelectChange = (e: SelectChangeEvent<string>) => {
-    const { name, value } = e.target;
-    setFormData((f) => ({ ...f, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,116 +87,142 @@ const MedicalRecordForm: React.FC<Props> = ({ recordId, onClose }) => {
 
     const payload = {
       ...formData,
-      symptoms: formData.symptoms
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean),
-      visitDate: new Date(formData.visitDate).toISOString(),
+      symptoms: formData.symptoms.split(',').map((s) => s.trim()),
     };
 
-    try {
-      if (recordId) {
-        await dispatch(updateMedicalRecord({ id: recordId, data: payload }));
-      } else {
-        await dispatch(createMedicalRecord(payload));
-      }
-      onClose();
-    } catch (error) {
-      console.error('Error saving medical record', error);
+    if (recordId) {
+      await dispatch(updateMedicalRecord({ id: recordId, data: payload }));
+    } else {
+      await dispatch(createMedicalRecord(payload));
     }
+
+    onClose();
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 400 }}>
-      <FormControl fullWidth size="small">
-        <InputLabel id="patient-label">Пациент</InputLabel>
-        <Select
-          labelId="patient-label"
-          id="patient-select"
-          name="patient"
-          value={formData.patient}
-          label="Пациент"
-          onChange={handleSelectChange}
-          required
-        >
-          {allPatients.map((p) => (
-            <MenuItem key={p._id} value={p._id}>
-              {p.lastName} {p.firstName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth size="small">
-        <InputLabel id="doctor-label">Врач</InputLabel>
-        <Select
-          labelId="doctor-label"
-          id="doctor-select"
-          name="doctor"
-          value={formData.doctor}
-          label="Врач"
-          onChange={handleSelectChange}
-          required
-        >
-          {allDoctors.map((d) => (
-            <MenuItem key={d._id} value={d._id}>
-              {d.name} {d.specialization}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <TextField
-        label="Диагноз"
-        name="diagnosis"
-        value={formData.diagnosis}
-        onChange={handleChange}
-        size="small"
-        fullWidth
-        required
-      />
-
-      <TextField
-        label="Симптомы (через запятую)"
-        name="symptoms"
-        value={formData.symptoms}
-        onChange={handleChange}
-        size="small"
-        fullWidth
-      />
-
-      <TextField
-        label="Назначения / лечение"
-        name="notes"
-        multiline
-        rows={3}
-        value={formData.notes}
-        onChange={handleChange}
-        size="small"
-        fullWidth
-      />
-
-      <TextField
-        label="Дата визита"
-        name="visitDate"
-        type="date"
-        value={formData.visitDate}
-        onChange={handleChange}
-        InputLabelProps={{ shrink: true }}
-        size="small"
-        fullWidth
-        required
-      />
-
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-        <Button variant="outlined" onClick={onClose}>
-          Отмена
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
-          Сохранить
-        </Button>
+    <Paper elevation={3} sx={{ p: 4, borderRadius: 3, maxWidth: 700, mx: 'auto' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: 3,
+          p: 2,
+          bgcolor: 'primary.main',
+          color: 'white',
+          borderRadius: 2,
+          position: 'relative',
+        }}
+      >
+        <Assignment sx={{ mr: 2 }} />
+        <Typography variant="h5" fontWeight="bold">
+          {recordId ? 'Редактировать запись' : 'Новая медицинская запись'}
+        </Typography>
+        <IconButton onClick={onClose} sx={{ position: 'absolute', right: 8, color: 'white' }}>
+          <Close />
+        </IconButton>
       </Box>
-    </Box>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <Box display="flex" flexDirection="column" gap={2}>
+          <TextField
+            select
+            label="Врач"
+            name="doctor"
+            value={formData.doctor}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+          >
+            {doctors.map((doc) => (
+              <MenuItem key={doc._id} value={doc._id}>
+                {doc.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            select
+            label="Пациент"
+            name="patient"
+            value={formData.patient}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+          >
+            {patients.map((pat) => (
+              <MenuItem key={pat._id} value={pat._id}>
+                {pat.firstName} {pat.lastName}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            label="Дата визита"
+            name="visitDate"
+            type="date"
+            value={formData.visitDate}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+
+          <TextField
+            label="Симптомы (через запятую)"
+            name="symptoms"
+            value={formData.symptoms}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+            multiline
+            rows={2}
+          />
+
+          <TextField
+            label="Диагноз"
+            name="diagnosis"
+            value={formData.diagnosis}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+          />
+
+          <TextField
+            label="Заметки"
+            name="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            size="small"
+            fullWidth
+            multiline
+            rows={2}
+          />
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        <Box display="flex" justifyContent="flex-end" gap={2}>
+          <Button variant="outlined" onClick={onClose} disabled={loading}>
+            Отмена
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            startIcon={loading ? <CircularProgress size={16} /> : <Save />}
+            disabled={loading}
+          >
+            {loading ? 'Сохранение...' : 'Сохранить'}
+          </Button>
+        </Box>
+      </form>
+    </Paper>
   );
 };
 
