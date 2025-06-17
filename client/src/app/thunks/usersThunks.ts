@@ -23,8 +23,11 @@ export const register = createAsyncThunk<
       const formData = new FormData();
       formData.append("username", registerMutation.username);
       formData.append("password", registerMutation.password);
-      formData.append("displayName", registerMutation.displayName);
-
+      formData.append("name", registerMutation.name);
+      formData.append("role", registerMutation.role);
+      if (registerMutation.specialization) {
+        formData.append("specialization", registerMutation.specialization);
+      }
       if (registerMutation.avatar) {
         formData.append("avatar", registerMutation.avatar);
       }
@@ -76,3 +79,11 @@ export const fetchDoctors = createAsyncThunk<UserDoctor[]>(
     return response.data;
   }
 );
+
+export const fetchUsers = createAsyncThunk<User[]>(
+  'users/fetchUsers',
+  async () => {
+    const response = await axiosApi.get('/users');
+    return response.data;
+  }
+)

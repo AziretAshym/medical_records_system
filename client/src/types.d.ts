@@ -1,7 +1,9 @@
 export interface RegisterMutation {
   username: string;
   password: string;
-  displayName: string;
+  name: string;
+  role: string;
+  specialization?: string;
   avatar?: File;
 }
 
@@ -13,8 +15,9 @@ export interface LoginMutation {
 export interface User {
   _id: string;
   username: string;
-  displayName: string;
+  name: string;
   role: string;
+  specialization?: string;
   avatar?: string | File;
   token: string;
 }

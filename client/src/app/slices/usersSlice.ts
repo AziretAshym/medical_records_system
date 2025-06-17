@@ -1,7 +1,7 @@
 import { GlobalError, User, UserDoctor, ValidationError } from '@/types';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store.ts';
-import { fetchDoctors, login, register } from '../thunks/usersThunks.ts';
+import { fetchDoctors, fetchUsers, login, register } from '../thunks/usersThunks.ts';
 
 interface UsersState {
   user: User | null;
@@ -9,7 +9,8 @@ interface UsersState {
   registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalError | null;
-  all: UserDoctor[];
+  doctors: UserDoctor[];
+  allUsers: User[];
   loading: boolean;
   error: string | null;
 }
@@ -20,7 +21,8 @@ const initialState: UsersState = {
   registerError: null,
   loginLoading: false,
   loginError: null,
-  all: [],
+  doctors: [],
+  allUsers: [],
   loading: false,
   error: null,
 };
@@ -28,7 +30,8 @@ const initialState: UsersState = {
 export const selectUser = (state: RootState) => state.users.user;
 export const selectRegisterError = (state: RootState) => state.users.registerError;
 export const selectLoginError = (state: RootState) => state.users.loginError;
-export const selectAllDoctors = (state: RootState) => state.users.all;
+export const selectAllDoctors = (state: RootState) => state.users.doctors;
+export const selectAllUsers = (state: RootState) => state.users.allUsers;
 export const selectDoctorsLoading = (state: RootState) => state.users.loading;
 export const selectDoctorsError = (state: RootState) => state.users.error;
 
@@ -75,9 +78,21 @@ export const usersSlice = createSlice({
       })
       .addCase(fetchDoctors.fulfilled, (state, action) => {
         state.loading = false;
-        state.all = action.payload;
+        state.doctors = action.payload;
       })
       .addCase(fetchDoctors.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Ошибка загрузки врачей';
+      })
+      .addCase(fetchUsers.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allUsers = action.payload;
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Ошибка загрузки врачей';
       });
