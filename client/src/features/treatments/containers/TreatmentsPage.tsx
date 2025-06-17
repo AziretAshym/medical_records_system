@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { Pill } from 'lucide-react';
+import { ScrollText } from 'lucide-react';
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchAllTreatments } from '@/app/thunks/treatmentsThunks';
@@ -35,7 +35,7 @@ const TreatmentsPage: React.FC = () => {
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Pill />
+          <ScrollText />
           <Typography variant="h4" fontWeight="bold" color="#023e5e">
             Назначения
           </Typography>

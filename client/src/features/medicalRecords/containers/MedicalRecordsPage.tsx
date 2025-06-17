@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { FileText } from 'lucide-react';
+import { NotepadText } from 'lucide-react';
 import MedicalRecordForm from '@/features/medicalRecords/components/MedicalRecordForm.tsx';
 import MedicalRecordsList from '@/features/medicalRecords/components/MedicalRecordsList.tsx';
 
@@ -34,7 +34,7 @@ const MedicalRecordsPage: React.FC = () => {
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FileText />
+          <NotepadText />
           <Typography variant="h4" fontWeight="bold" color="#023e5e">
             Приемы
           </Typography>
