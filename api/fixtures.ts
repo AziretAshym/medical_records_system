@@ -25,7 +25,6 @@ const run= async () => {
           password: "admin",
           role: "admin",
           name: "Admin",
-          specialization: "admin",
           token: randomUUID(),
           avatar: "",
       },

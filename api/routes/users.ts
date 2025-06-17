@@ -88,11 +88,20 @@ usersRouter.delete("/session", auth, async (req, res, next) => {
     }
 });
 
-usersRouter.get("/doctors", auth, async (req, res, next) => {
+usersRouter.get("/doctors", async (req, res, next) => {
     try {
         const doctors = await User.find({ role: "doctor" }).select("_id name specialization avatar");
 
         res.send(doctors);
+    } catch (error) {
+        next(error);
+    }
+});
+
+usersRouter.get("/", async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.send(users);
     } catch (error) {
         next(error);
     }
