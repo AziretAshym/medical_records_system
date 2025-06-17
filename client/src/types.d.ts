@@ -110,3 +110,39 @@ export interface MedicalRecordFormData {
   diagnosis: string;
   notes: string;
 }
+
+  export interface Treatment {
+    _id: string;
+    name: string;
+    description: string;
+    type: 'медикамент' | 'процедура' | 'операция' | 'рекомендация';
+    dosage?: string;
+    frequency?: string;
+    duration?: string;
+    startDate: string;
+    endDate?: string;
+    status: 'запланировано' | 'в процессе' | 'выполнено' | 'отменено';
+    treatmentNumber: string;
+    createdAt: string;
+    updatedAt: string;
+    medicalRecord: string | MedicalRecord;
+    patient: string | Pick<Patient, '_id' | 'firstName' | 'lastName'>;
+    assignedBy: string | Pick<User, '_id' | 'name'>;
+    updatedBy: string | Pick<User, '_id' | 'name'>;
+  }
+
+export interface TreatmentFormData {
+  name: string;
+  description: string;
+  type: 'медикамент' | 'процедура' | 'операция' | 'рекомендация';
+  dosage: string;
+  frequency: string;
+  duration: string;
+  startDate: string;
+  endDate: string;
+  status: 'запланировано' | 'в процессе' | 'выполнено' | 'отменено';
+  patient: string;
+  assignedBy: string;
+  updatedBy: string;
+  medicalRecord: string;
+}

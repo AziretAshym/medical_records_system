@@ -8,7 +8,7 @@ import permit from '../middleware/permit';
 
 const treatmentsRouter = express.Router();
 
-treatmentsRouter.get('/', auth, async (_req, res, next) => {
+treatmentsRouter.get('/', async (_req, res, next) => {
     try {
         const treatments = await Treatment.find()
             .populate('assignedBy', 'name')
@@ -23,7 +23,7 @@ treatmentsRouter.get('/', auth, async (_req, res, next) => {
 });
 
 
-treatmentsRouter.get('/patient/:patientId', auth, async (req, res, next) => {
+treatmentsRouter.get('/patient/:patientId', async (req, res, next) => {
     try {
         const patientId = req.params.patientId;
 
@@ -36,6 +36,8 @@ treatmentsRouter.get('/patient/:patientId', auth, async (req, res, next) => {
         const treatments = await Treatment.find({ patient: patientId })
             .populate('assignedBy', 'name')
             .populate('updatedBy', 'name')
+            .populate('patient', 'firstName lastName')
+            .populate('medicalRecord')
             .sort({ startDate: -1 });
 
         res.send(treatments);
@@ -44,7 +46,7 @@ treatmentsRouter.get('/patient/:patientId', auth, async (req, res, next) => {
     }
 });
 
-treatmentsRouter.get('/:id', auth, async (req, res, next) => {
+treatmentsRouter.get('/:id', async (req, res, next) => {
     try {
         const treatment = await Treatment.findById(req.params.id)
             .populate('medicalRecord', '_id')
@@ -63,7 +65,7 @@ treatmentsRouter.get('/:id', auth, async (req, res, next) => {
     }
 });
 
-treatmentsRouter.post('/', auth, async (req, res, next) => {
+treatmentsRouter.post('/', async (req, res, next) => {
     const userReq = req as RequestWithUser;
 
     try {

@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistStore } from 'redux-persist';
 import { patientsReducer } from '@/app/slices/patientsSlice.ts';
 import { medicalRecordsReducer } from '@/app/slices/medicalRecordsSlice.ts';
+import { treatmentsReducer } from '@/app/slices/treatmentsSlice.ts';
 
 
 const usersPersistConfig = {
@@ -15,7 +16,8 @@ const usersPersistConfig = {
 const rootReducer = combineReducers({
   users: persistReducer(usersPersistConfig, usersReducer),
   patients: patientsReducer,
-  medicalRecords: medicalRecordsReducer
+  medicalRecords: medicalRecordsReducer,
+  treatments: treatmentsReducer,
 })
 
 
