@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchMedicalRecordById } from '@/app/thunks/medicalRecordsThunks';
 import MedicalRecordDetail from '@/features/medicalRecords/components/MedicalRecordDetail';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   clearSelectedRecord,
@@ -40,10 +40,6 @@ const MedicalRecordDetailPage: React.FC = () => {
       >
         Назад
       </Button>
-
-      <Typography variant="h4" color="primary" gutterBottom>
-        Детальная информация о карте
-      </Typography>
 
       {loading && <CircularProgress />}
       {error && (

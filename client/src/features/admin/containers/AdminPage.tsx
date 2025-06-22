@@ -68,7 +68,7 @@ const AdminPage: React.FC = () => {
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
         <TextField
           size="small"
-          label="Поиск по имени или логину"
+          label="Поиск"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />

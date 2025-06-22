@@ -38,7 +38,6 @@ const MedicalRecordDetail: React.FC<Props> = ({ medicalRecord }) => {
     if (!person) return '';
 
     if ('name' in person) return person.name;
-    if ('displayName' in person) return person.displayName;
     if ('firstName' in person && 'lastName' in person) {
       return `${person.firstName} ${person.lastName}`;
     }
@@ -60,7 +59,7 @@ const MedicalRecordDetail: React.FC<Props> = ({ medicalRecord }) => {
         <DescriptionIcon sx={{ fontSize: 40, mr: 2 }} />
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-            Медицинская карта №{medicalRecord.recordNumber}
+           Медицинский прием №{medicalRecord.recordNumber}
           </Typography>
           <Typography variant="body1" sx={{ opacity: 0.9 }}>
             Дата визита: {new Date(medicalRecord.visitDate).toLocaleDateString('ru-RU')}
