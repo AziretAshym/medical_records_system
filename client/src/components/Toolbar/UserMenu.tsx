@@ -6,7 +6,6 @@ import {
   Avatar,
   ListItemIcon,
 } from '@mui/material';
-import { Logout, } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/app/hooks';
 import { logout } from '@/app/thunks/usersThunks';
@@ -14,6 +13,7 @@ import { unsetUser } from '@/app/slices/usersSlice';
 import { toast } from 'react-toastify';
 import { User } from '@/types';
 import { apiUrl } from '@/globalConstants.ts';
+import { LogOut, ShieldUser } from 'lucide-react';
 
 interface Props {
   user: User;
@@ -52,11 +52,24 @@ const UserMenu: React.FC<Props> = ({ user }) => {
   return (
     <>
       <IconButton onClick={handleMenuOpen}>
-        <Avatar alt={user.displayName} src={userAvatar} />
+        <Avatar alt={user.name} src={userAvatar} />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+        <MenuItem
+          onClick={() => {
+            handleMenuClose();
+            navigate('/admin-panel');
+          }}
+        >
+          <ListItemIcon>
+            <ShieldUser size={16} color="#575757" strokeWidth={1} />
+          </ListItemIcon>
+          Админ-панель
+        </MenuItem>
+
+
         <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-          <ListItemIcon><Logout fontSize="small" sx={{ color: 'error.main' }} /></ListItemIcon>
+          <ListItemIcon><LogOut size={16} color="#ff0000" strokeWidth={1} /></ListItemIcon>
           Выйти
         </MenuItem>
       </Menu>
