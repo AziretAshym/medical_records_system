@@ -13,7 +13,7 @@ const Layout = () => {
           <Toolbar/>
         </header>
       )}
-      <main style={{ marginTop: isLoginPage ? 0 : 84 }}>
+      <main style={{ marginTop: isLoginPage ? 0 : 84, paddingBottom: 29 }}>
         {isLoginPage ? (
           <Container>
             <Outlet/>
